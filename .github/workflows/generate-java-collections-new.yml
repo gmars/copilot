@@ -1,0 +1,33 @@
+name: Generate Java collections programs no complize and upload ZIP
+
+on:
+  push:
+    branches:
+      - generate-java-collections
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Run generator script
+        run: |
+          python3 generate_java_collections.py
+          ls -la
+
+      - name: Create ZIP artifact
+        run: |
+          zip -r java_collections_42.zip ./* -x .git/*
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: java_collections_42
+          path: java_collections_42.zip
