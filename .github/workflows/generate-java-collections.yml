@@ -22,16 +22,6 @@ jobs:
           python3 generate_java_collections.py
           ls -la
 
-      - name: Compile all Java programs
-        run: |
-          set -e
-          for d in */; do
-            if [ -d "$d/src" ]; then
-              mkdir -p "$d/bin"
-            fi
-          done
-          echo "All Java compiled."
-
       - name: Create ZIP artifact
         run: |
           zip -r java_collections_42.zip ./* -x .git/*
