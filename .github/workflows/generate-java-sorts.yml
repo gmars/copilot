@@ -1,0 +1,44 @@
+name: Generate Java sorts and upload ZIP
+
+on:
+  push:
+    branches:
+      - generate-java-sorts
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Run generator script
+        run: |
+          python3 generate_java_sorts.py
+          ls -la
+
+      - name: Compile all Java projects
+        run: |
+          # 编译每个子文件夹的 src/*.java 到各自的 bin 目录，以便确保代码可编译
+          for d in */; do
+            if [ -d "$d/src" ]; then
+              mkdir -p "$d/bin"
+              javac -d "$d/bin" "$d/src"/*.java || { echo "Compilation failed in $d"; exit 1; }
+            fi
+          done
+          echo "All compilations done."
+
+      - name: Create ZIP artifact
+        run: |
+          zip -r java_sorts_42.zip ./* -x .git/*
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: java_sorts_42
+          path: java_sorts_42.zip
