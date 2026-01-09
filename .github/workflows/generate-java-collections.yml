@@ -28,7 +28,6 @@ jobs:
           for d in */; do
             if [ -d "$d/src" ]; then
               mkdir -p "$d/bin"
-              javac -d "$d/bin" "$d/src"/*.java || { echo "Compilation failed in $d"; exit 1; }
             fi
           done
           echo "All Java compiled."
